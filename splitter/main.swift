@@ -45,6 +45,8 @@ public class Passworder {
     var string: String
     private typealias PassDict = [String : ItemStruct]
     
+    let savePath = URL.homeDirectory.path(percentEncoded: false) + "/Downloads/Passwords/"
+
     struct ItemStruct {
         var Domain: String
         var Title: String
@@ -54,8 +56,9 @@ public class Passworder {
         var TOTP: String?
     }
     
+    let exclusions = ["www", "users", "m", "nz", "idp", "hub", "passport", "oauth", "app", "signin", "lk", "com", "ru-ru", "ru", "org", "net", "auth", "social", "login", "gg", "store", "connect", "accounts", "account", "esia"]
+    
     private func createReadableName(_ S: String) -> String {
-        let exclusions = ["www", "passport", "oauth", "app", "signin", "lk", "com", "ru-ru", "ru", "org", "net", "auth", "social", "login", "gg", "store", "connect", "accounts", "account", "esia"]
         var retval = S
         exclusions.forEach { exclusion in
             let prep = retval.split(separator: ".")
@@ -161,13 +164,13 @@ public class Passworder {
     PinIsSet: true
     NotificationMethod: 3
     """
-        
-        FileManager.default.createFile(atPath: URL.homeDirectory.path(percentEncoded: false) + "/Downloads/totp.conf", contents: String(fileData + "\n" + totpCONFIGString).data(using: .utf8))
+        try? FileManager.default.createDirectory(at: URL(filePath: savePath), withIntermediateDirectories: true)
+        FileManager.default.createFile(atPath: savePath + "totp.conf", contents: String(fileData + "\n" + totpCONFIGString).data(using: .utf8))
 
     }
     
     private func generatePasswordsWithTOTP(_ s: PassDict) {
-        try? FileManager.default.createDirectory(atPath: "/Users/chieff/Downloads/Passwords With TOTP", withIntermediateDirectories: false)
+        try? FileManager.default.createDirectory(atPath: savePath + "Passwords With TOTP", withIntermediateDirectories: true)
         s.forEach { el in
             if el.value.TOTP != nil {
                 let contents: Data = String("""
@@ -176,13 +179,13 @@ public class Passworder {
     Password: \(el.value.Password)
     TOTP: \(el.value.TOTP!)
     """).data(using: .utf8)!
-                FileManager.default.createFile(atPath: URL.homeDirectory.path(percentEncoded: false) + "/Downloads/Passwords With TOTP/\(el.value.ReadableName).txt", contents: contents)
+                FileManager.default.createFile(atPath: savePath + "Passwords With TOTP/\(el.value.ReadableName).txt", contents: contents)
             }
         }
     }
     
     private func generatePasswordsWithoutTOTP(_ s: PassDict) {
-        try? FileManager.default.createDirectory(atPath: URL.homeDirectory.path(percentEncoded: false) + "/Downloads/Passwords Without TOTP", withIntermediateDirectories: false)
+        try? FileManager.default.createDirectory(atPath: savePath + "Passwords Without TOTP", withIntermediateDirectories: true)
         s.forEach { el in
             if el.value.TOTP == nil {
                 let contents: Data = String("""
@@ -190,7 +193,7 @@ public class Passworder {
     Login: \(el.value.Login)
     Password: \(el.value.Password)
     """).data(using: .utf8)!
-                FileManager.default.createFile(atPath: URL.homeDirectory.path(percentEncoded: false) + "/Downloads/Passwords Without TOTP/\(el.value.ReadableName).txt", contents: contents)
+                FileManager.default.createFile(atPath: savePath + "Passwords Without TOTP/\(el.value.ReadableName).txt", contents: contents)
             }
         }
     }
@@ -213,7 +216,7 @@ Password: \(el.value.Password)
                 return retval.data(using: .utf8)!
             }
         }
-        FileManager.default.createFile(atPath: URL.homeDirectory.path(percentEncoded: false) + "/Downloads/Passwords.txt", contents: allPasswordsData)
+        FileManager.default.createFile(atPath: savePath + "Passwords.txt", contents: allPasswordsData)
     }
     
     func generateFiles(_ type: generate) {

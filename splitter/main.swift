@@ -35,19 +35,29 @@ public class Passworder {
                 break
             }
         }while(mainString != "")
-        self.string = mainString!
+        self.FileContents = mainString!
+        self.FilePath = inHomeFolderString
     }
     
     public init(_ pathToFile: String) {
         let string = String(data: FileManager.default.contents(atPath: pathToFile)!, encoding: .utf8)!
-        self.string = string
+        self.FilePath = String(pathToFile.split(separator: ".").last!)
+        self.FileContents = string
     }
-    var string: String
+    var FilePath: String
+    var FileContents: String
     private typealias PassDict = [String : ItemStruct]
     
     let savePath = URL.homeDirectory.path(percentEncoded: false) + "/Downloads/Passwords/"
 
-    struct ItemStruct {
+    struct ItemStruct: Comparable {
+        static func < (lhs: Passworder.ItemStruct, rhs: Passworder.ItemStruct) -> Bool {
+            lhs.ReadableName < rhs.ReadableName
+        }
+        static func > (lhs: Passworder.ItemStruct, rhs: Passworder.ItemStruct) -> Bool {
+            lhs.ReadableName < rhs.ReadableName
+        }
+
         var Domain: String
         var Title: String
         var Login: String
@@ -77,6 +87,36 @@ public class Passworder {
             retval = String(retval.dropFirst())
         }
         return String(retval.first!).capitalized + String(retval.dropFirst())
+    }
+    
+    private func PrepCSV(_ csv: String) -> String {
+        let CSVByLines = csv.split(separator: "\n").dropFirst()
+        let separator = checkForDelimiter()
+        var retval = String()
+        
+        var counter = 0
+        
+        CSVByLines.forEach { line in
+            line.split(separator: separator).forEach { element in
+                if line.count == 6 {
+                    if counter != 1 {
+                        retval += element.description + separator.description
+                    }
+                    if counter != 4 {
+                        retval += element.description + separator.description
+                    }
+                } else {
+                    if counter != 1 {
+                        retval += element.description + separator.description
+                    }
+                }
+                counter += 1
+            }
+            retval = retval.dropLast().description + "\n"
+            counter = 0
+        }
+
+        return retval
     }
     
     private func generatePasswordStruct() -> PassDict {
@@ -111,7 +151,14 @@ public class Passworder {
             return retval
         }
         
-        let PrepArray = string.split(separator: "\n")
+        var prepString = String()
+
+        if FilePath.split(separator: ".").last?.description == "csv" {
+            prepString = PrepCSV(FileContents)
+        } else {
+            prepString = FileContents
+        }
+        let PrepArray = prepString.split(separator: "\n")
         var PasswordArray = PassDict()
                 
         PrepArray.forEach { element in
@@ -132,7 +179,10 @@ public class Passworder {
                 PasswordArray[title!] = .init(Domain: domain!, Title: title!, Login: login!, Password: password!, ReadableName: createReadableName(domain!), TOTP: totp)
             }
         }
-        return removeDuplicates(PasswordArray)
+        
+        let finalArray = removeDuplicates(PasswordArray)
+        let sortedArray = PassDict(uniqueKeysWithValues: finalArray.sorted(by: <))
+        return sortedArray
     }
     
     private func generateTOTPConfig(_ s: PassDict) {
@@ -240,8 +290,8 @@ Password: \(el.value.Password)
     }
     
     private func checkForDelimiter() -> Character {
-        let textToCheck = string
-        var charCounter: [Character : Int] = ["!" : 0 , ";" : 0, "~" : 0, ":" : 0, "\"" : 0]
+        let textToCheck = FileContents
+        var charCounter: [Character : Int] = ["!" : 0 , ";" : 0, "~" : 0, ":" : 0, "\"" : 0, "," : 0]
         textToCheck.forEach { c in
             charCounter.forEach { v in
                 if c == v.key {

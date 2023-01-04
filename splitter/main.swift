@@ -19,8 +19,23 @@ public class Passworder {
     public init() {
         print("Enter full path to file:\n>\(URL.homeDirectory.path(percentEncoded: false))")
         let inHomeFolderString = readLine()!
-        let string = String(data: FileManager.default.contents(atPath: URL.homeDirectory.path(percentEncoded: false) + "/\(inHomeFolderString)")!, encoding: .utf8)!
-        self.string = string
+        var mainString: String? = ""
+        repeat {
+            mainString = String(data: FileManager.default.contents(atPath: URL.homeDirectory.path(percentEncoded: false) + "/\(inHomeFolderString)") ?? Data(), encoding: .utf8)
+            if mainString == "" {
+                print("Invalid input. Retry?\ny/n")
+                switch readLine()! {
+                case "y":
+                    continue
+                default:
+                    print("See you!")
+                    exit(0)
+                }
+            } else {
+                break
+            }
+        }while(mainString != "")
+        self.string = mainString!
     }
     
     public init(_ pathToFile: String) {
@@ -263,15 +278,12 @@ func mainRunner(_ pathToFile: String?, _ recursion: Bool) {
     } else {
         Passworder().generateFiles(type!)
     }
-    print("Repeat?\ny/N")
+    print("All done! Wanna process another file?\ny/N")
     switch readLine()!.lowercased() {
     case "y":
         mainRunner(pathToFile, true)
-    case "n":
-        print("See you!")
-        exit(0)
     default:
-        print("Invalid input\nSee you!")
+        print("See you!")
         exit(0)
     }
 }

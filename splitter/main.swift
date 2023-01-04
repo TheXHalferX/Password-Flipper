@@ -55,10 +55,17 @@ public class Passworder {
     }
     
     private func createReadableName(_ S: String) -> String {
-        let exclusions = ["www", "com", "ru", "org", "net", "auth", "social", "login", "gg", "store", "connect", "accounts", "account", "esia"]
+        let exclusions = ["www", "passport", "oauth", "app", "signin", "lk", "com", "ru-ru", "ru", "org", "net", "auth", "social", "login", "gg", "store", "connect", "accounts", "account", "esia"]
         var retval = S
         exclusions.forEach { exclusion in
-            retval = retval.replacingOccurrences(of: exclusion, with: "")
+            let prep = retval.split(separator: ".")
+            prep.forEach { el in
+                if el == exclusion {
+                    retval = retval.replacingOccurrences(of: el, with: "")
+                } else if el == "live" {
+                    retval = retval.replacingOccurrences(of: el, with: "Microsoft")
+                }
+            }
         }
         if retval.last == "." {
             retval = String(retval.dropLast())
@@ -70,6 +77,37 @@ public class Passworder {
     }
     
     private func generatePasswordStruct() -> PassDict {
+        func removeDuplicates(_ editingArray: PassDict) -> PassDict {
+            var TOTP = PassDict()
+            var nonTOTP = PassDict()
+
+            editingArray.forEach { element in
+                if !TOTP.values.contains(where: { el in
+                    el.TOTP != nil && el.TOTP == element.value.TOTP
+                }) {
+                    TOTP[element.key] = element.value
+                }
+            }
+            
+            editingArray.forEach { element in
+                if element.value.TOTP == nil {
+                    nonTOTP[element.key] = element.value
+                }
+            }
+            
+            var retval = PassDict()
+            
+            TOTP.forEach { element in
+                retval[element.key] = element.value
+            }
+            
+            nonTOTP.forEach { element in
+                retval[element.key] = element.value
+            }
+            
+            return retval
+        }
+        
         let PrepArray = string.split(separator: "\n")
         var PasswordArray = PassDict()
                 
@@ -91,7 +129,7 @@ public class Passworder {
                 PasswordArray[title!] = .init(Domain: domain!, Title: title!, Login: login!, Password: password!, ReadableName: createReadableName(domain!), TOTP: totp)
             }
         }
-        return PasswordArray
+        return removeDuplicates(PasswordArray)
     }
     
     private func generateTOTPConfig(_ s: PassDict) {
@@ -101,7 +139,7 @@ public class Passworder {
                 s.forEach { el in
                     if el.value.TOTP != nil {
                         retval.append("""
-    TokenName: \(el.value.ReadableName)
+    TokenName: \(el.value.ReadableName.uppercased())
     TokenSecret: \(el.value.TOTP!)
     TokenAlgo: sha1
     TokenDigits: 6

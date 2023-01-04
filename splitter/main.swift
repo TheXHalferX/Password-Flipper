@@ -205,15 +205,7 @@ public class Passworder {
             }
         }
         
-        let fileData: String = """
-    Filetype: Flipper TOTP plugin config file
-    Version: 2
-    BaseIV: 03 FC 99 92 42 45 AD 85 5F 00 47 65 19 C7 42 CD
-    Crypto: 20 EA 2A 59 24 54 C7 AF 8D 4C 65 2E A1 AC 8C 59
-    Timezone: 3.000000
-    PinIsSet: true
-    NotificationMethod: 3
-    """
+        let fileData: String = "Filetype: Flipper TOTP plugin config file\nVersion: 2"
         try? FileManager.default.createDirectory(at: URL(filePath: savePath), withIntermediateDirectories: true)
         FileManager.default.createFile(atPath: savePath + "totp.conf", contents: String(fileData + "\n" + totpCONFIGString).data(using: .utf8))
 

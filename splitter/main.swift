@@ -23,14 +23,8 @@ public class Passworder {
         repeat {
             mainString = String(data: FileManager.default.contents(atPath: URL.homeDirectory.path(percentEncoded: false) + "/\(inHomeFolderString)") ?? Data(), encoding: .utf8)
             if mainString == "" {
-                print("Invalid input. Retry?\ny/n")
-                switch readLine()! {
-                case "y":
-                    continue
-                default:
-                    print("See you!")
-                    exit(0)
-                }
+                print("Invalid input.")
+                exit(0)
             } else {
                 break
             }
@@ -55,7 +49,10 @@ public class Passworder {
             lhs.ReadableName < rhs.ReadableName
         }
         static func > (lhs: Passworder.ItemStruct, rhs: Passworder.ItemStruct) -> Bool {
-            lhs.ReadableName < rhs.ReadableName
+            lhs.ReadableName > rhs.ReadableName
+        }
+        static func == (lhs: Passworder.ItemStruct, rhs: Passworder.ItemStruct) -> Bool {
+            lhs.ReadableName == rhs.ReadableName
         }
 
         var Domain: String
@@ -66,7 +63,7 @@ public class Passworder {
         var TOTP: String?
     }
     
-    let exclusions = ["www", "users", "m", "nz", "idp", "hub", "passport", "oauth", "app", "signin", "lk", "com", "ru-ru", "ru", "org", "net", "auth", "social", "login", "gg", "store", "connect", "accounts", "account", "esia"]
+    let exclusions = ["www", "users", "nz", "idp", "hub", "passport", "oauth", "app", "signin", "lk", "com", "ru-ru", "ru", "org", "net", "auth", "social", "login", "gg", "store", "connect", "accounts", "account", "esia", "m", "business"]
     
     private func createReadableName(_ S: String) -> String {
         var retval = S
@@ -181,7 +178,9 @@ public class Passworder {
         }
         
         let finalArray = removeDuplicates(PasswordArray)
-        let sortedArray = PassDict(uniqueKeysWithValues: finalArray.sorted(by: <))
+        let sortedArray = PassDict(uniqueKeysWithValues: finalArray.sorted(by: { lhs, rhs in
+            return lhs.value.ReadableName < rhs.value.ReadableName
+        }))
         return sortedArray
     }
     
@@ -189,11 +188,12 @@ public class Passworder {
         var totpCONFIGString: String {
             get {
                 var retval: String = ""
-                s.forEach { el in
-                    if el.value.TOTP != nil {
+                s.values.sorted(by: <).forEach { el in
+                    if el.TOTP != nil {
                         retval.append("""
-    TokenName: \(el.value.ReadableName.uppercased())
-    TokenSecret: \(el.value.TOTP!)
+    
+    TokenName: \(el.ReadableName.uppercased())
+    TokenSecret: \(el.TOTP!)
     TokenAlgo: sha1
     TokenDigits: 6
     
@@ -221,29 +221,29 @@ public class Passworder {
     
     private func generatePasswordsWithTOTP(_ s: PassDict) {
         try? FileManager.default.createDirectory(atPath: savePath + "Passwords With TOTP", withIntermediateDirectories: true)
-        s.forEach { el in
-            if el.value.TOTP != nil {
+        s.values.sorted(by: <).forEach { el in
+            if el.TOTP != nil {
                 let contents: Data = String("""
-    Title: \(el.value.Title)
-    Login: \(el.value.Login)
-    Password: \(el.value.Password)
-    TOTP: \(el.value.TOTP!)
+    Title: \(el.Title)
+    Login: \(el.Login)
+    Password: \(el.Password)
+    TOTP: \(el.TOTP!)
     """).data(using: .utf8)!
-                FileManager.default.createFile(atPath: savePath + "Passwords With TOTP/\(el.value.ReadableName).txt", contents: contents)
+                FileManager.default.createFile(atPath: savePath + "Passwords With TOTP/\(el.ReadableName).txt", contents: contents)
             }
         }
     }
     
     private func generatePasswordsWithoutTOTP(_ s: PassDict) {
         try? FileManager.default.createDirectory(atPath: savePath + "Passwords Without TOTP", withIntermediateDirectories: true)
-        s.forEach { el in
-            if el.value.TOTP == nil {
+        s.values.sorted(by: <).forEach { el in
+            if el.TOTP == nil {
                 let contents: Data = String("""
-    Title: \(el.value.Title)
-    Login: \(el.value.Login)
-    Password: \(el.value.Password)
+    Title: \(el.Title)
+    Login: \(el.Login)
+    Password: \(el.Password)
     """).data(using: .utf8)!
-                FileManager.default.createFile(atPath: savePath + "Passwords Without TOTP/\(el.value.ReadableName).txt", contents: contents)
+                FileManager.default.createFile(atPath: savePath + "Passwords Without TOTP/\(el.ReadableName).txt", contents: contents)
             }
         }
     }
@@ -252,13 +252,14 @@ public class Passworder {
         var allPasswordsData: Data {
             get {
                 var retval = ""
-                s.forEach { el in
+                s.values.sorted(by: <).forEach { el in
                     retval += """
-Domain: \(el.value.Domain)
-Title: \(el.value.Title)
-Login: \(el.value.Login)
-Password: \(el.value.Password)
-\(el.value.TOTP != nil ? "TOTP Secret: \(el.value.TOTP!)" : "")
+Human name: \(el.ReadableName)
+Domain: \(el.Domain)
+Title: \(el.Title)
+Login: \(el.Login)
+Password: \(el.Password)
+\(el.TOTP != nil ? "TOTP Secret: \(el.TOTP!)" : "")
 
 
 """

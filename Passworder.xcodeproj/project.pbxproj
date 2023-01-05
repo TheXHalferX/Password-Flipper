@@ -251,10 +251,9 @@
 		9ACA395E2964605600782F30 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5XE9Q47HH3;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.x-lab.passworder";
+				DEVELOPMENT_TEAM = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -263,10 +262,9 @@
 		9ACA395F2964605600782F30 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5XE9Q47HH3;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.x-lab.passworder";
+				DEVELOPMENT_TEAM = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};

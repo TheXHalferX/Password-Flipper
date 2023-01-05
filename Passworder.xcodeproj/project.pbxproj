@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9ACA395A2964605600782F30 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ACA39592964605600782F30 /* main.swift */; };
+		9ADE986529677358008D80B8 /* Passworder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ADE986429677358008D80B8 /* Passworder.swift */; };
+		9ADE98672967737D008D80B8 /* Secondary stuff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ADE98662967737D008D80B8 /* Secondary stuff.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +25,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9ACA39562964605600782F30 /* splitter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = splitter; sourceTree = BUILT_PRODUCTS_DIR; };
+		9ACA39562964605600782F30 /* passworder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = passworder; sourceTree = BUILT_PRODUCTS_DIR; };
 		9ACA39592964605600782F30 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		9ADE986429677358008D80B8 /* Passworder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Passworder.swift; sourceTree = "<group>"; };
+		9ADE98662967737D008D80B8 /* Secondary stuff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Secondary stuff.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,7 +53,7 @@
 		9ACA39572964605600782F30 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9ACA39562964605600782F30 /* splitter */,
+				9ACA39562964605600782F30 /* passworder */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -58,6 +62,8 @@
 			isa = PBXGroup;
 			children = (
 				9ACA39592964605600782F30 /* main.swift */,
+				9ADE986429677358008D80B8 /* Passworder.swift */,
+				9ADE98662967737D008D80B8 /* Secondary stuff.swift */,
 			);
 			path = splitter;
 			sourceTree = "<group>";
@@ -65,9 +71,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9ACA39552964605600782F30 /* splitter */ = {
+		9ACA39552964605600782F30 /* passworder */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9ACA395D2964605600782F30 /* Build configuration list for PBXNativeTarget "splitter" */;
+			buildConfigurationList = 9ACA395D2964605600782F30 /* Build configuration list for PBXNativeTarget "passworder" */;
 			buildPhases = (
 				9ACA39522964605600782F30 /* Sources */,
 				9ACA39532964605600782F30 /* Frameworks */,
@@ -77,9 +83,9 @@
 			);
 			dependencies = (
 			);
-			name = splitter;
+			name = passworder;
 			productName = splitter;
-			productReference = 9ACA39562964605600782F30 /* splitter */;
+			productReference = 9ACA39562964605600782F30 /* passworder */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -97,7 +103,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 9ACA39512964605600782F30 /* Build configuration list for PBXProject "splitter" */;
+			buildConfigurationList = 9ACA39512964605600782F30 /* Build configuration list for PBXProject "Passworder" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -110,7 +116,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9ACA39552964605600782F30 /* splitter */,
+				9ACA39552964605600782F30 /* passworder */,
 			);
 		};
 /* End PBXProject section */
@@ -121,6 +127,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				9ACA395A2964605600782F30 /* main.swift in Sources */,
+				9ADE98672967737D008D80B8 /* Secondary stuff.swift in Sources */,
+				9ADE986529677358008D80B8 /* Passworder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,7 +251,10 @@
 		9ACA395E2964605600782F30 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5XE9Q47HH3;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.x-lab.passworder";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -252,7 +263,10 @@
 		9ACA395F2964605600782F30 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5XE9Q47HH3;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.x-lab.passworder";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -261,7 +275,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9ACA39512964605600782F30 /* Build configuration list for PBXProject "splitter" */ = {
+		9ACA39512964605600782F30 /* Build configuration list for PBXProject "Passworder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9ACA395B2964605600782F30 /* Debug */,
@@ -270,7 +284,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9ACA395D2964605600782F30 /* Build configuration list for PBXNativeTarget "splitter" */ = {
+		9ACA395D2964605600782F30 /* Build configuration list for PBXNativeTarget "passworder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9ACA395E2964605600782F30 /* Debug */,

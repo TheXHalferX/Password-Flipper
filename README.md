@@ -19,3 +19,5 @@
 	- Everything above: e
 - Hit "Return" again
 - Generated files will appear in your Downloads folder in folder "Passwords"
+
+Then just put totp.conf in "autenticator" folder on your Flipper's microSD and don't forget to set your time zone and PIN when first launching the Autenticator app. What to do with the rest of files generated decide for yourself!
